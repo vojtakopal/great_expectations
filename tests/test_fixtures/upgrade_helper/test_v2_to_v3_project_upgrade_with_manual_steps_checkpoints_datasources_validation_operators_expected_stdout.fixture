@@ -17,8 +17,8 @@ Automated Steps
 
 The following Stores and/or Store Names will be upgraded:
 
-    - Stores: checkpoint_store
-    - Store Names: checkpoint_store_name
+    - Stores: checkpoint_store, profiler_store
+    - Store Names: checkpoint_store_name, profiler_store_name
 
 Manual Steps
 =============

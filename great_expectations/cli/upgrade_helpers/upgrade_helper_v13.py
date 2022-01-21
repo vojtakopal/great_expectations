@@ -70,8 +70,6 @@ class UpgradeHelperV13(BaseUpgradeHelper):
             config_commented_map: CommentedMap = (
                 self.data_context.get_config().commented_map
             )
-            # print(config_commented_map)
-
             profiler_store_name: Optional[str] = config_commented_map.get(
                 "profiler_store_name"
             )
@@ -86,12 +84,9 @@ class UpgradeHelperV13(BaseUpgradeHelper):
                         ]
                     }
             else:
-                print("HELLO HELLO HELLO")
-
                 profiler_store_name = (
                     DataContextConfigDefaults.DEFAULT_PROFILER_STORE_NAME.value
                 )
-                print("~~~ PROFILER STORE NAME~~~")
                 self.upgrade_checklist["automatic"]["store_names"][
                     "profiler_store_name"
                 ] = profiler_store_name
@@ -102,7 +97,6 @@ class UpgradeHelperV13(BaseUpgradeHelper):
                         profiler_store_name
                     ]
         else:
-            print("i skip everything")
             self.upgrade_log["skipped_profiler_store_upgrade"] = True
 
     def _process_checkpoint_store_for_checklist(self):

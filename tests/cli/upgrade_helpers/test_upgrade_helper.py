@@ -505,6 +505,7 @@ great_expectations/
         custom_data_docs/
             styles/
                 data_docs_custom_styles.css
+    profilers/
     uncommitted/
         config_variables.yml
         data_docs/
@@ -612,6 +613,7 @@ great_expectations/
         custom_data_docs/
             styles/
                 data_docs_custom_styles.css
+    profilers/
     uncommitted/
         config_variables.yml
         data_docs/
