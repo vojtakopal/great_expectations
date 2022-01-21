@@ -7,6 +7,7 @@ from ruamel.yaml.comments import CommentedMap
 
 import great_expectations.checkpoint.toolkit as checkpoint_toolkit
 import great_expectations.exceptions as ge_exceptions
+import great_expectations.rule_based_profiler.toolkit as profiler_toolkit
 from great_expectations import DataContext
 from great_expectations.checkpoint import Checkpoint, LegacyCheckpoint
 from great_expectations.cli.upgrade_helpers.base_upgrade_helper import BaseUpgradeHelper
@@ -53,14 +54,56 @@ class UpgradeHelperV13(BaseUpgradeHelper):
                 "validation_operators": {},
             },
         }
-
         self._generate_upgrade_checklist()
 
     def _generate_upgrade_checklist(self):
         self._process_checkpoint_store_for_checklist()
+        self._process_profiler_stores_for_checklist()
         self._process_checkpoint_config_for_checklist()
         self._process_datasources_for_checklist()
         self._process_validation_operators_for_checklist()
+
+    def _process_profiler_stores_for_checklist(self):
+        if not profiler_toolkit.default_profilers_exist(
+            directory_path=self.data_context.root_directory
+        ):
+            config_commented_map: CommentedMap = (
+                self.data_context.get_config().commented_map
+            )
+            # print(config_commented_map)
+
+            profiler_store_name: Optional[str] = config_commented_map.get(
+                "profiler_store_name"
+            )
+            stores: dict = config_commented_map["stores"]
+            if profiler_store_name:
+                if stores.get(profiler_store_name):
+                    self.upgrade_log["skipped_profiler_store_upgrade"] = True
+                else:
+                    self.upgrade_checklist["automatic"]["stores"] = {
+                        profiler_store_name: DataContextConfigDefaults.DEFAULT_STORES.value[
+                            DataContextConfigDefaults.DEFAULT_PROFILER_STORE_NAME.value
+                        ]
+                    }
+            else:
+                print("HELLO HELLO HELLO")
+
+                profiler_store_name = (
+                    DataContextConfigDefaults.DEFAULT_PROFILER_STORE_NAME.value
+                )
+                print("~~~ PROFILER STORE NAME~~~")
+                self.upgrade_checklist["automatic"]["store_names"][
+                    "profiler_store_name"
+                ] = profiler_store_name
+                if not stores.get(profiler_store_name):
+                    self.upgrade_checklist["automatic"]["stores"][
+                        profiler_store_name
+                    ] = DataContextConfigDefaults.DEFAULT_STORES.value[
+                        profiler_store_name
+                    ]
+        else:
+            print("i skip everything")
+            self.upgrade_log["skipped_profiler_store_upgrade"] = True
 
     def _process_checkpoint_store_for_checklist(self):
         if checkpoint_toolkit.default_checkpoints_exist(
@@ -227,7 +270,6 @@ Your project needs to be upgraded in order to be compatible with Great Expectati
         checkpoint_config_upgrade_checklist = self.upgrade_checklist["manual"][
             "checkpoints"
         ]
-
         # noinspection SpellCheckingInspection
         datasources_upgrade_checklist = self.upgrade_checklist["manual"]["datasources"]
 
@@ -361,7 +403,9 @@ No manual upgrade steps are required.
             )
             self.data_context.set_config(project_config=data_context_config)
             self.data_context._save_project_config()
-
+            config_commented_map: CommentedMap = (
+                self.data_context.get_config().commented_map
+            )
             checkpoint_log_entry = {
                 "stores": {
                     DataContextConfigDefaults.DEFAULT_CHECKPOINT_STORE_NAME.value: data_context_config.stores[

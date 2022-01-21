@@ -17,6 +17,10 @@ from great_expectations.data_context.types.base import (
 
 
 class UpgradeHelperV13(BaseUpgradeHelper):
+    """
+    NOTE: This is not the UpgradeHelperV13 that is used by the CLI.
+    """
+
     def __init__(self, data_context=None, context_root_dir=None):
         assert (
             data_context or context_root_dir
