@@ -181,6 +181,7 @@ great_expectations/
         custom_store_backends/
             __init__.py
             my_custom_store_backend.py
+    profilers/
     uncommitted/
         config_variables.yml
         data_docs/
@@ -675,6 +676,9 @@ great_expectations/
 def test_v2_to_v3_project_upgrade_without_manual_steps(
     v20_project_directory_with_v30_configuration_and_no_checkpoints, caplog
 ):
+    # i think this should create the checkpoint/ directory
+    # and the profilers/ directory
+
     runner: CliRunner = CliRunner(mix_stderr=False)
     result: Result = runner.invoke(
         cli,
@@ -721,6 +725,7 @@ great_expectations/
         custom_data_docs/
             styles/
                 data_docs_custom_styles.css
+    profilers/
     uncommitted/
         config_variables.yml
         data_docs/

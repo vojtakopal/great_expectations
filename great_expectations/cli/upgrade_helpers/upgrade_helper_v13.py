@@ -64,6 +64,8 @@ class UpgradeHelperV13(BaseUpgradeHelper):
         self._process_validation_operators_for_checklist()
 
     def _process_profiler_stores_for_checklist(self):
+        # since profilers are a V14-creation, we will want to create the store and directory unless a profiler directory
+        # already exists (unlikely).
         if not profiler_toolkit.default_profilers_exist(
             directory_path=self.data_context.root_directory
         ):
@@ -91,11 +93,12 @@ class UpgradeHelperV13(BaseUpgradeHelper):
                     "profiler_store_name"
                 ] = profiler_store_name
                 if not stores.get(profiler_store_name):
-                    self.upgrade_checklist["automatic"]["stores"][
-                        profiler_store_name
-                    ] = DataContextConfigDefaults.DEFAULT_STORES.value[
-                        profiler_store_name
-                    ]
+                    self.upgrade_checklist["automatic"]["stores"] = {
+                        profiler_store_name: DataContextConfigDefaults.DEFAULT_STORES.value[
+                            profiler_store_name
+                        ]
+                    }
+
         else:
             self.upgrade_log["skipped_profiler_store_upgrade"] = True
 
