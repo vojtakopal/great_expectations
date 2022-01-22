@@ -52,16 +52,13 @@ def project_check_config(directory):
 )
 def project_upgrade(directory):
     """Upgrade a project after installing the next Great Expectations major version."""
-    cli_message("\nChecking project...")
-    cli_message(SECTION_SEPARATOR)
-    if load_data_context_with_error_handling(
-        directory=directory, from_cli_upgrade_command=True
-    ):
-        up_to_date_message = (
-            "Your project is up-to-date - no further upgrade is necessary.\n"
-        )
-        cli_message(f"<green>{up_to_date_message}</green>")
-        sys.exit(0)
+    cli_message(
+        f"<red>You have run the 'great_expectations project upgrade' command using the --v2-api flag, which is not able to perform the full upgrade to the configuration (3.0) that is fully compatible with the V3-API</red>"
+    )
+    cli_message(
+        f"<red>Please re-run the 'great_expectations project upgrade' command without the --v2-api flag.</red>"
+    )
+    sys.exit(0)
 
 
 def do_config_check(target_directory):

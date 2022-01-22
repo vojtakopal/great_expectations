@@ -54,3 +54,24 @@ def test_project_check_on_project_with_missing_config_file_guides_user(
     assert "Checking your config files for validity" in result.output
     assert "Unfortunately, your config appears to be invalid" in result.output
     assert_no_logging_messages_or_tracebacks(caplog, result)
+
+
+def test_project_upgrade_v2_api_not_supported(caplog, titanic_data_context):
+    project_dir = titanic_data_context.root_directory
+    # Remove the config file.
+    os.remove(os.path.join(project_dir, "great_expectations.yml"))
+
+    runner = CliRunner(mix_stderr=False)
+    result = runner.invoke(
+        cli, ["project", "upgrade", "-d", project_dir], catch_exceptions=False
+    )
+    assert result.exit_code == 0
+    assert (
+        "You have run the 'great_expectations project upgrade' command using the --v2-api flag, which is not able to perform the full upgrade to the configuration (3.0) that is fully compatible with the V3-API"
+        in result.output
+    )
+    assert (
+        "Please re-run the 'great_expectations project upgrade' command without the --v2-api flag."
+        in result.output
+    )
+    assert_no_logging_messages_or_tracebacks(caplog, result)

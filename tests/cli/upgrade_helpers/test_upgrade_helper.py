@@ -164,6 +164,9 @@ def test_basic_project_upgrade(v10_project_directory, caplog):
         expected_stdout = expected_stdout.replace(
             "GE_PROJECT_DIR", v10_project_directory
         )
+        print(stdout)
+        print("~~~~~~")
+        print(expected_stdout)
         assert stdout == expected_stdout
 
     expected_project_tree_str: str = """\
