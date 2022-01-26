@@ -1,4 +1,5 @@
 import enum
+import logging
 import os
 import shutil
 import subprocess
@@ -9,6 +10,8 @@ import pytest
 
 from assets.scripts.build_gallery import execute_shell_command
 from great_expectations.data_context.util import file_relative_path
+
+logger = logging.getLogger(__name__)
 
 
 class BackendDependencies(enum.Enum):
@@ -25,6 +28,7 @@ class BackendDependencies(enum.Enum):
 
 # to be populated by the smaller lists below
 docs_test_matrix = []
+
 
 local_tests = [
     {
